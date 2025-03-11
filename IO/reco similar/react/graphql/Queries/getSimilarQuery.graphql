@@ -1,0 +1,16 @@
+query getSimilarQuery($itemId: String, $itemCatalogName: String) {
+  getSimilar(itemId: $itemId, itemCatalogName: $itemCatalogName) {
+    brand
+    category
+    imageLink
+    itemId
+    title
+    price {
+      value
+    }
+    salePrice {
+      value
+    }
+    link
+  }
+}

@@ -1,0 +1,18 @@
+query searchQuery($query: String, $index: String, $token: String) {
+  search(query: $query, index: $index, token: $token) {
+    title
+    brand
+    category
+    imageLink
+    price {
+      value
+      currency
+    }
+    salePrice {
+      value
+      currency
+    }
+    link
+    itemId
+  }
+}

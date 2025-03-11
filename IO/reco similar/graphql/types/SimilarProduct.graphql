@@ -1,0 +1,14 @@
+type Price {
+  value: Float
+}
+
+type SimilarProduct {
+  brand: String
+  category: String
+  imageLink: String
+  itemId: String
+  title: String
+  price: Price
+  salePrice: Price
+  link: String
+}
