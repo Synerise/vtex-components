@@ -54,8 +54,8 @@ function Search({ index, token }: SearchProps) {
 }
 
 Search.defaultProps = {
-  index: '9e88b75a3c2e2a8a1928ae232eacf0fa1714055832',
-  token: '089b13d4-d8b5-439f-a1ad-d932c9c1802a',
+  index: 'XXXX',
+  token: 'XXX-XXX-XXX',
 }
 
 Search.schema = {
@@ -65,12 +65,12 @@ Search.schema = {
     index: {
       type: 'string',
       title: 'Search index',
-      default: '9e88b75a3c2e2a8a1928ae232eacf0fa1714055832',
+      default: 'XXXX',
     },
     token: {
       type: 'string',
       title: 'Token (tracker key)',
-      default: '089b13d4-d8b5-439f-a1ad-d932c9c1802a',
+      default: 'XXX-XXX-XXX',
     },
   },
 }

@@ -1,4 +1,4 @@
-const TRACKER_KEY = '089b13d4-d8b5-439f-a1ad-d932c9c1802a'
+const TRACKER_KEY = 'XXX-XXX-XXX'
 
 export const getSimilar = async (
   _: any,

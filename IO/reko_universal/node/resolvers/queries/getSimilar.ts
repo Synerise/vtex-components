@@ -1,4 +1,4 @@
-const TRACKER_KEY = '089b13d4-d8b5-439f-a1ad-d932c9c1802a'
+const TRACKER_KEY = 'XXX-XXX-XXX'
 // const clientUUID = '8f1b3ea5-933b-498d-bee1-db7ff987b920'
 
 // itemCatalogName: string,
