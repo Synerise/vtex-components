@@ -92,7 +92,8 @@ RecoSlider.schema = {
   type: 'object',
   properties: {
     campaignId: {
-      title: 'CampaignID',
+      title: 'Campaign ID',
+      description: 'Campaign ID for establishing the context',
       type: 'string',
     },
     items: {
@@ -115,47 +116,67 @@ RecoSlider.schema = {
       },
     },
     itemsSource: {
-      title: 'CampaignID',
-      type: 'string',
+      title: 'Items Source',
+      description:
+        'Source of the Item ID or item IDs for the recommendation context.',
+      type: 'object',
+      properties: {
+        type: {
+          title: "Type of the item's source",
+          type: 'string',
+          default: 'aggregate',
+          enum: ['aggregate', 'expression'],
+        },
+        id: {
+          title: "ID of the item's source (aggregate or expression)",
+          type: 'string',
+        },
+      },
     },
     itemsExcluded: {
       title: 'Excluded items',
-      type: 'array',
-      items: {
-        title: 'Item ID',
-        type: 'string',
-      },
+      description:
+        'Items (identified by itemId in the item feed) that will be excluded from the generated recommendations. For example, items already added to the basket. Seperate item IDs with a comma.',
+      type: 'string',
     },
     additionalFilters: {
       title: 'Additional filters',
+      description:
+        "Additional filters. These are merged with the campaign's own filters according to the logic in filtersJoiner.",
       type: 'string',
     },
     filtersJoiner: {
       title: 'Filters joiner',
+      description:
+        "Defines the logic of merging additionalFilters with the campaign's existing filters.",
       type: 'string',
       default: 'AND',
       enum: ['AND', 'OR', 'REPLACE'],
     },
     additionalElasticFilters: {
       title: 'Additional elastic filters',
+      description:
+        "Additional elastic filters. These are merged with the campaign's own elastic filters according to the logic in elasticFiltersJoiner.",
       type: 'string',
     },
     elasticFiltersJoiner: {
       title: 'Elastic filters joiner',
+      description:
+        "Defines the logic of merging additionalElasticFilters with the campaign's existing elastic filters.",
       type: 'string',
       default: 'AND',
       enum: ['AND', 'OR', 'REPLACE'],
     },
     displayAttributes: {
       title: 'Display attributes',
-      type: 'array',
-      items: {
-        title: 'Attribute',
-        type: 'string',
-      },
+      description:
+        'An array of item attributes which value will be returned in a recommendation response. The array will be merged together with the configuration of the recommendation. Seperate attributes with a comma.',
+      type: 'string',
     },
     includeContextItems: {
       title: 'Include context items',
+      description:
+        'When true, the recommendation response will include context items metadata.',
       type: 'boolean',
       default: false,
     },
