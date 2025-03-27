@@ -22,17 +22,21 @@ export function Slider({
   const itemWidth = 100 / itemsPerPage
 
   const prevSlide = () => {
-    setCurrentItem((prev) =>
-      prev - itemsPerPage < 0 ? 0 : prev - itemsPerPage
-    )
+    setCurrentItem((prev) => {
+      const prevSlideIndex = prev - itemsPerPage
+      const firstSlideIndex = 0
+
+      return Math.max(firstSlideIndex, prevSlideIndex)
+    })
   }
 
   const nextSlide = () => {
-    setCurrentItem((prev) =>
-      prev + itemsPerPage > slides.length - itemsPerPage
-        ? slides.length - itemsPerPage
-        : prev + itemsPerPage
-    )
+    setCurrentItem((prev) => {
+      const nextSlideIndex = prev + itemsPerPage
+      const lastSlideIndex = slides.length - itemsPerPage
+
+      return Math.min(lastSlideIndex, nextSlideIndex)
+    })
   }
 
   const isFull = useMemo(
