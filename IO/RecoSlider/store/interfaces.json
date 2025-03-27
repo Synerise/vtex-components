@@ -1,0 +1,6 @@
+{
+  "synerise-recommendations": {
+    "component": "RecoSlider",
+    "composition": "children"
+  }
+}

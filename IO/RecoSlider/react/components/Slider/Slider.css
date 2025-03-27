@@ -1,0 +1,45 @@
+.slider__container {
+  position: relative;
+  max-width: 100%;
+  padding: 0 3rem;
+}
+
+.slider__content {
+  overflow: hidden;
+  width: 100%;
+}
+
+.slider__items {
+  width: 100%;
+  display: flex;
+  transition: all 0.2s;
+  min-height: 4rem;
+  max-height: 30rem;
+}
+
+.slider__item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: none;
+}
+
+.slider__btn {
+  position: absolute;
+  z-index: 10;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 3rem;
+  height: 3rem;
+}
+
+.slider__btn--left {
+  left: 0;
+}
+
+.slider__btn--right {
+  right: 0;
+}
