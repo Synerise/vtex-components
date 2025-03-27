@@ -1,0 +1,30 @@
+query getRecommendationsQuery(
+  $campaignId: String!
+  $items: [String]
+  $clientUUID: String
+  $itemsSource: ItemsSourceInput
+  $itemsExcluded: [String]
+  $additionalFilters: String
+  $filtersJoiner: FilterJoiner
+  $additionalElasticFilters: String
+  $elasticFiltersJoiner: FilterJoiner
+  $displayAttributes: [String]
+  $includeContextItems: Boolean
+) {
+  syneriseAIRecommendations(campaignId: $campaignId) {
+    recommendations(
+      items: $items
+      clientUUID: $clientUUID
+      itemsSource: $itemsSource
+      itemsExcluded: $itemsExcluded
+      additionalFilters: $additionalFilters
+      filtersJoiner: $filtersJoiner
+      additionalElasticFilters: $additionalElasticFilters
+      elasticFiltersJoiner: $elasticFiltersJoiner
+      displayAttributes: $displayAttributes
+      includeContextItems: $includeContextItems
+    ) {
+      data
+    }
+  }
+}
