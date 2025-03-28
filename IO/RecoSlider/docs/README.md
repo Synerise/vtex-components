@@ -1,6 +1,6 @@
 # Synerise Recommendation Slider
 
-![Slider with recommended products](https://cdn.jsdelivr.net/gh/Synerise/vtex-components@main/docs/recommendation-slider-img.png)
+![Slider with recommended products](https://cdn.jsdelivr.net/gh/Synerise/vtex-components@main/IO/RecoSlider/docs/recommendation-slider-img.png)
 The `synerise-recommendations` block is designed to display slider with recommended products based on provided Synerise recommendation campaign.
 
 ## Configuration
