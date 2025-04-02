@@ -20,12 +20,12 @@ interface RecoSliderProps {
   items: { desktop: number; tablet: number; phone: number }
   campaignId: string
   itemsSource: string
-  itemsExcluded: string[]
+  itemsExcluded: string
   additionalFilters: string
   filtersJoiner: string
   additionalElasticFilters: string
   elasticFiltersJoiner: string
-  displayAttributes: string[]
+  displayAttributes: string
   includeContextItems: boolean
 }
 
@@ -50,12 +50,12 @@ export function RecoSlider({
         ? [productCtx.product.productId]
         : [],
       itemsSource,
-      itemsExcluded,
+      itemsExcluded: itemsExcluded?.split(','),
       additionalFilters,
       filtersJoiner,
       additionalElasticFilters,
       elasticFiltersJoiner,
-      displayAttributes,
+      displayAttributes: displayAttributes?.split(','),
       includeContextItems,
     },
     ssr: false,
@@ -136,7 +136,7 @@ RecoSlider.schema = {
     itemsExcluded: {
       title: 'Excluded items',
       description:
-        'Items (identified by itemId in the item feed) that will be excluded from the generated recommendations. For example, items already added to the basket. Seperate item IDs with a comma.',
+        'Items (identified by itemId in the item feed) that will be excluded from the generated recommendations. For example, items already added to the basket. Seperated item IDs with a comma.',
       type: 'string',
     },
     additionalFilters: {
@@ -170,7 +170,7 @@ RecoSlider.schema = {
     displayAttributes: {
       title: 'Display attributes',
       description:
-        'An array of item attributes which value will be returned in a recommendation response. The array will be merged together with the configuration of the recommendation. Seperate attributes with a comma.',
+        'An array of item attributes which value will be returned in a recommendation response. The array will be merged together with the configuration of the recommendation. Seperated attributes with a comma.',
       type: 'string',
     },
     includeContextItems: {

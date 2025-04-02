@@ -1,7 +1,7 @@
 {
-  "vendor": "synerisepartnerar",
+  "vendor": "{YOUR_VENDOR_NAME}",
   "name": "synerise-recommendation-slider",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "title": "Synerise recommendation slider",
   "description": "Slider with recommended products provided by Synerise",
   "builders": {
