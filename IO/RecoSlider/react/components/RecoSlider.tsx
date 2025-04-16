@@ -19,7 +19,7 @@ const DEFAULT_ITEMS = {
 interface RecoSliderProps {
   items: { desktop: number; tablet: number; phone: number }
   campaignId: string
-  itemsSource: string
+  itemsSource: { type: 'aggregate' | 'expression'; id: string }
   itemsExcluded: string
   additionalFilters: string
   filtersJoiner: string
@@ -49,7 +49,7 @@ export function RecoSlider({
       items: productCtx?.product?.productId
         ? [productCtx.product.productId]
         : [],
-      itemsSource,
+      ...(itemsSource.id && {itemsSource}),
       itemsExcluded: itemsExcluded?.split(','),
       additionalFilters,
       filtersJoiner,
