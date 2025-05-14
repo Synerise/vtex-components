@@ -1,0 +1,6 @@
+{
+  "synerise-listing": {
+    "component": "Listing",
+    "composition": "children"
+  }
+}

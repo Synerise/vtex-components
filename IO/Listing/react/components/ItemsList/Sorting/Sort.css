@@ -1,0 +1,22 @@
+.sort-control {
+  display: flex;
+}
+
+.sort-order {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  transition: all 0.2s;
+
+  & svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
+
+.sort-order:hover {
+  cursor: pointer;
+  color: #777;
+}
