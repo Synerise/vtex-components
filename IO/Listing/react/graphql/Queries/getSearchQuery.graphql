@@ -1,0 +1,67 @@
+query getSearchQuery(
+  $indexId: String!
+  $query: String!
+  $page: Int
+  $sortBy: String
+  $limit: Int
+  $ordering: SyneriseSearchOrdering
+  $sortByMetric: SyneriseSearchSortByMetric
+  $sortByGeoPoints: String
+  $filters: String
+  $filterGeoPoints: [String]
+  $filterAroundRadius: Int
+  $filterAnchor: String
+  $facets: [String]
+  $customFilteredFacets: JSONObject
+  $facetsSize: Int
+  $maxValuesPerFacet: Int
+  $caseSensitiveFacetValues: Boolean
+  $includeFacets: SyneriseSearchIncludeFacets
+  $distinctFilter: SyneriseSearchDistinctFilter
+  $clientUUID: String
+  $personalized: Boolean
+  $correlationId: String
+  $context: [String]
+  $displayAttributes: [String]
+  $ignoreQueryRules: Boolean
+  $excludeQueryRules: [Int]
+) {
+  syneriseAISearch(indexId: $indexId) {
+    search(
+      query: $query
+      page: $page
+      sortBy: $sortBy
+      limit: $limit
+      ordering: $ordering
+      sortByMetric: $sortByMetric
+      sortByGeoPoints: $sortByGeoPoints
+      filters: $filters
+      filterGeoPoints: $filterGeoPoints
+      filterAroundRadius: $filterAroundRadius
+      filterAnchor: $filterAnchor
+      facets: $facets
+      customFilteredFacets: $customFilteredFacets
+      facetsSize: $facetsSize
+      maxValuesPerFacet: $maxValuesPerFacet
+      caseSensitiveFacetValues: $caseSensitiveFacetValues
+      includeFacets: $includeFacets
+      distinctFilter: $distinctFilter
+      clientUUID: $clientUUID
+      personalized: $personalized
+      correlationId: $correlationId
+      context: $context
+      displayAttributes: $displayAttributes
+      ignoreQueryRules: $ignoreQueryRules
+      excludeQueryRules: $excludeQueryRules
+    ) {
+      data
+      extras {
+        customFilteredFacets
+        correlationId
+      }
+      meta {
+        totalPages
+      }
+    }
+  }
+}

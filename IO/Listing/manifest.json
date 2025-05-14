@@ -1,0 +1,22 @@
+{
+  "vendor": "{YOUR_VENDOR_NAME}",
+  "name": "synerise-listing",
+  "version": "0.0.2",
+  "title": "Synerise listing",
+  "description": "Listing powered by Synerise",
+  "builders": {
+    "react": "3.x",
+    "messages": "1.x",
+    "docs": "0.x",
+    "store": "0.x"
+  },
+  "dependencies": {
+    "vtex.render-runtime": "8.x"
+  },
+  "peerDependencies": {
+    "synerisepartnerar.synerise-integration": "1.x"
+  },
+  "registries": ["smartcheckout"],
+  "policies": [],
+  "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"
+}

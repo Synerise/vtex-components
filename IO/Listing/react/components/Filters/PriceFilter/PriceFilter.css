@@ -1,0 +1,103 @@
+.price-filter__container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.price-values__container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.price-value {
+  color: #777;
+}
+
+.price-sliders__container {
+  position: relative;
+  height: 20px;
+}
+
+.track {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+  height: 6px;
+  background-color: #eee;
+  border: 1px solid #ccc;
+}
+
+.range {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+  max-width: 100%;
+  height: 6px;
+  background-color: #444;
+}
+
+.price-slider {
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
+  outline: none;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.price-slider,
+.price-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.price-slider::-webkit-slider-thumb {
+  background-color: #444;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  height: 20px;
+  width: var(--thumb-width, 8px);
+  top: 0;
+  margin-top: 20px;
+  pointer-events: all;
+  position: relative;
+}
+
+.price-slider--min::-webkit-slider-thumb {
+  transform: translateX(-50%);
+}
+
+.price-slider--max::-webkit-slider-thumb {
+  transform: translateX(50%);
+}
+
+/* For Firefox */
+.price-slider::-moz-range-thumb {
+  background-color: #444;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  height: 20px;
+  width: var(--thumb-width, 8px);
+  top: 0;
+  margin-top: 20px;
+  pointer-events: all;
+  position: relative;
+}
+
+.price-slider--min::-moz-range-thumb {
+  transform: translateX(-50%);
+}
+
+.price-slider--max::-moz-range-thumb {
+  transform: translateX(50%);
+}

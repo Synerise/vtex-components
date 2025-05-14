@@ -1,0 +1,44 @@
+.filters-btn {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+  background: none;
+  text-align: right;
+  padding: 0;
+
+  & svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  @media (max-width: 900px) {
+    display: flex;
+  }
+}
+
+.filters-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  min-width: 12rem;
+  max-width: 18rem;
+  width: 100%;
+  background-color: #fff;
+
+  @media (max-width: 900px) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    max-width: 100%;
+    display: none;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.filters-container--open {
+  display: flex;
+}
