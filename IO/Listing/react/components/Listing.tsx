@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-apollo'
 import type { QueryHookOptions } from 'react-apollo'
 import { useRuntime } from 'vtex.render-runtime'
@@ -58,7 +58,7 @@ export function Listing({
   indexId,
   personalize,
   sortByMetric,
-  listingFilterAttribute,
+  listingFilterAttribute = 'category',
   filterableFacets = DEFAULT_FILTERS,
   facetsSize,
   maxValuesPerFacet,
@@ -92,6 +92,7 @@ export function Listing({
     [defaultAttributeFilter, filterableFacets]
   )
 
+  const correlationIdQuery = query?.correlationId
   const pageQuery = Number(query?.page) || DEFAULT_OPTS.page
   const pageSizeQuery = query?.pageSize ?? DEFAULT_OPTS.pageSize
   const sortQuery = query?.sort ?? DEFAULT_OPTS.sort
@@ -100,14 +101,12 @@ export function Listing({
       ? SORTING_OPTIONS.DESC
       : SORTING_OPTIONS.ASC
 
+  const correlationId = useRef<string | undefined>(correlationIdQuery)
   const [page, setPage] = useState(pageQuery)
   const [pageSize, setPageSize] = useState(pageSizeQuery)
   const [sortBy, setSortBy] = useState(sortQuery)
   const [ordering, setOrdering] = useState<OrderingType>(orderQuery)
   const [filters, setFilters] = useState<FilterType>(defaultFilters)
-  const [correlationId, setCorrelationId] = useState<string | undefined>(
-    undefined
-  )
 
   // disable url change on site editor panel
   const isSiteEditor = route.queryString?.__siteEditor
@@ -168,8 +167,7 @@ export function Listing({
   useEffect(() => {
     // page reset to 1
     setPage(DEFAULT_OPTS.page)
-    setCorrelationId(undefined)
-    setQuerySafe({ page: undefined })
+    setTimeout(() => setQuerySafe({ page: undefined }))
   }, [filters, pageSize, sortBy, ordering, setQuerySafe])
 
   const commonQueryOptions: QueryHookOptions = {
@@ -177,7 +175,7 @@ export function Listing({
       indexId,
       query: searchQuery,
       personalize,
-      correlationId,
+      correlationId: correlationId.current,
       sortByMetric,
       facetsSize,
       maxValuesPerFacet,
@@ -222,8 +220,8 @@ export function Listing({
   const resCorrelationId = data?.extras.correlationId
 
   useEffect(() => {
-    setCorrelationId(resCorrelationId)
-    setQuerySafe({ correlationId: resCorrelationId })
+    correlationId.current = undefined
+    setTimeout(() => setQuerySafe({ correlationId: resCorrelationId }))
   }, [resCorrelationId, setQuerySafe])
 
   return (
@@ -253,7 +251,7 @@ export function Listing({
         {data?.data.length ? (
           <ItemsList
             items={data.data}
-            correlationId={correlationId ?? resCorrelationId}
+            correlationId={resCorrelationId}
             searchType={isSearch ? 'full-text-search' : 'listing'}
           />
         ) : (
