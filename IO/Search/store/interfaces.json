@@ -1,0 +1,6 @@
+{
+  "synerise-search": {
+    "component": "Search",
+    "composition": "children"
+  }
+}

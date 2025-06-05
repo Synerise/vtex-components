@@ -1,3 +1,0 @@
-type Query {
-  search(query: String, index: String, token: String): [SearchResult]
-}

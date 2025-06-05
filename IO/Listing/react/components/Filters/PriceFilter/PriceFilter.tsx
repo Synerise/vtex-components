@@ -111,9 +111,9 @@ export function PriceFilter({
         <div
           className={styles.range}
           style={{
-            marginLeft: `calc(${((filterMinValue - min) / max) * 100}% - ${
-              thumbWidth / 2
-            }px)`,
+            marginLeft: `calc(${
+              ((filterMinValue - min) / (max - min)) * 100
+            }% - ${thumbWidth / 2}px)`,
             width: `calc(${
               ((filterMaxValue - filterMinValue) / (max - min)) * 100
             }% + ${thumbWidth}px)`,

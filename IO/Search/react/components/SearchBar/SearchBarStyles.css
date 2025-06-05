@@ -1,0 +1,27 @@
+.search-input {
+  padding: 6px 40px 6px 16px;
+  border-radius: 4px;
+  border: 1px solid #e3e4e6;
+}
+
+.search-btn {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+
+  & svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  & div {
+    width: 20px;
+    height: 20px;
+  }
+}

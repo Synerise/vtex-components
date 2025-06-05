@@ -58,14 +58,27 @@ export function RecoSlider({
       displayAttributes: displayAttributes?.split(','),
       includeContextItems,
     },
+    onCompleted: (data) => {
+      if (typeof SR === 'undefined') return
+      const {
+        data: recoData,
+        extras: { correlationId },
+      } = data.syneriseAIRecommendations.recommendations
+
+      SR.event.recommendationView({
+        campaignId,
+        correlationId,
+        items: recoData.map(({ itemId }: { itemId: string }) => itemId),
+      })
+    },
     ssr: false,
   })
+
+  const recoData = data?.syneriseAIRecommendations.recommendations.data
 
   useEffect(() => {
     setDevice(getDevice())
   }, [])
-
-  const recoData = data?.syneriseAIRecommendations.recommendations.data
 
   return (
     <Slider itemsPerPage={items[device]}>

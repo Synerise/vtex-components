@@ -44,6 +44,7 @@ interface ListingProps {
   sortByMetric: 'TransactionsPopularity' | 'PageVisitsPopularity'
   listingFilterAttribute: string
   filterableFacets: FilterableFacetType[]
+  showFacetsValue: boolean
   facetsSize: number
   maxValuesPerFacet: number
   distinctFilter: {
@@ -60,17 +61,31 @@ export function Listing({
   sortByMetric,
   listingFilterAttribute = 'category',
   filterableFacets = DEFAULT_FILTERS,
+  showFacetsValue = true,
   facetsSize,
   maxValuesPerFacet,
   distinctFilter,
   ignoreQueryRules,
 }: ListingProps) {
   const { query, setQuery, route, deviceInfo } = useRuntime()
-  const searchQuery = query?.q
-  const { attributeValue } = route.params
-  const isSearch = attributeValue === 'search'
+  const {
+    department,
+    category = undefined,
+    subcategory = undefined,
+    term = undefined,
+  } = route.params
+
+  const searchQuery = query?.q ?? term
+  const path = [department, category, subcategory]
+    .filter((el) => !!el)
+    .join('>')
+    ?.replace(/---/g, ' & ')
+    .replace(/-/g, ' ')
+
+  const isSearch = !!searchQuery
+
   const defaultAttributeFilter = !isSearch
-    ? `${listingFilterAttribute} IN ["${attributeValue}"]`
+    ? `${listingFilterAttribute} IN ["${path}"]`
     : ''
 
   const defaultFilters = useMemo(
@@ -165,6 +180,10 @@ export function Listing({
   }, [filters])
 
   useEffect(() => {
+    setFilters(defaultFilters)
+  }, [defaultFilters])
+
+  useEffect(() => {
     // page reset to 1
     setPage(DEFAULT_OPTS.page)
     setTimeout(() => setQuerySafe({ page: undefined }))
@@ -197,7 +216,7 @@ export function Listing({
     getSearchQuery,
     {
       ...commonQueryOptions,
-      skip: !isSearch,
+      skip: !isSearch || !searchQuery,
     }
   )
 
@@ -221,6 +240,8 @@ export function Listing({
 
   useEffect(() => {
     correlationId.current = undefined
+    if (!resCorrelationId) return
+
     setTimeout(() => setQuerySafe({ correlationId: resCorrelationId }))
   }, [resCorrelationId, setQuerySafe])
 
@@ -237,6 +258,7 @@ export function Listing({
           filterableFacets={filterableFacets}
           defaultAttribute={listingFilterAttribute}
           defaultAttributeFilter={defaultAttributeFilter}
+          showFacetsValue={showFacetsValue}
         />
       )}
       <ItemsListContainer>
@@ -329,6 +351,13 @@ Listing.schema = {
         },
       },
       default: DEFAULT_FILTERS,
+    },
+    showFacetsValue: {
+      title: 'Show facets value',
+      description:
+        'If true number of items for each facet will be shown. If false, only the name of the facet will be shown.',
+      type: 'boolean',
+      default: true,
     },
     facetsSize: {
       title: 'Facets size',

@@ -15,6 +15,7 @@ interface FiltersProps {
   filterableFacets: FilterableFacetType[]
   defaultAttribute: string
   defaultAttributeFilter: string
+  showFacetsValue: boolean
 }
 
 export function Filters({
@@ -23,6 +24,7 @@ export function Filters({
   filterableFacets,
   defaultAttribute,
   defaultAttributeFilter,
+  showFacetsValue,
 }: FiltersProps) {
   return (
     <FiltersContainer>
@@ -41,7 +43,7 @@ export function Filters({
                   defaultFilter={
                     facet.key === defaultAttribute ? defaultAttributeFilter : ''
                   }
-                  showFacetCount
+                  showFacetCount={showFacetsValue}
                 />
               )}
               {facet.type === FILTERABLE_FACET_TYPES.price && (
@@ -60,7 +62,7 @@ export function Filters({
                   defaultFilter={
                     facet.key === defaultAttribute ? defaultAttributeFilter : ''
                   }
-                  showFacetCount
+                  showFacetCount={showFacetsValue}
                 />
               )}
             </AttributeFilter>
