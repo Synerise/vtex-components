@@ -99,9 +99,8 @@
 
 .title {
   font-size: 1.25rem;
-  font-weight: 600;
+  font-weight: 400;
   margin: 0;
-  text-wrap: balance;
 
   @media (max-width: 900px) {
     font-size: 1rem;
@@ -115,8 +114,8 @@
 }
 
 .prev-price {
-  font-size: 0.875rem;
-  font-weight: 400;
+  font-size: 0.775rem;
+  font-weight: 350;
   color: #727273;
   text-decoration: line-through;
 
@@ -126,8 +125,8 @@
 }
 
 .price {
-  font-size: 1.25rem;
-  font-weight: 600;
+  font-size: 1rem;
+  font-weight: 500;
 
   @media (max-width: 900px) {
     font-size: 1rem;

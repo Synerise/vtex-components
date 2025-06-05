@@ -1,0 +1,16 @@
+query getRecentSearchesQuery(
+  $indexId: String!
+  $clientUUID: String!
+  $windowSize: Int
+  $timeUnit: RecentSearchesTimeUnit
+  $timeValue: Int
+) {
+  syneriseAISearch(indexId: $indexId) {
+    recentSearches(
+      clientUUID: $clientUUID
+      windowSize: $windowSize
+      timeUnit: $timeUnit
+      timeValue: $timeValue
+    )
+  }
+}

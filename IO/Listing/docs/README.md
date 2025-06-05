@@ -51,15 +51,42 @@ The `synerise-listing` is a VTEX IO component that provides product listing and 
 }
 ```
 
-4. Add the `store.custom#listing` with the path `/:attributeValue` to your store routes in the `routes.json`:
+4. Replace the default search blocks with `synerise-listing` in your store's `search.json` file:
 
 ```json
 {
-  "store.custom#listing": {
-    "path": "/:attributeValue"
+  "store.search": {
+    "blocks": ["flex-layout.row#listing"]
+  },
+
+  "store.search#brand": {
+    "blocks": ["flex-layout.row#listing"]
+  },
+
+  "store.search#department": {
+    "blocks": ["flex-layout.row#listing"]
+  },
+
+  "store.search#category": {
+    "blocks": ["flex-layout.row#listing"]
+  },
+
+  "store.search#subcategory": {
+    "blocks": ["flex-layout.row#listing"]
+  },
+
+  "flex-layout.row#listing": {
+    "children": ["synerise-listing#listing"]
+  },
+  "synerise-listing#listing": {
+    "props": {
+      "indexId": "XXXX-XXXX-XXXX"
+    }
   }
 }
 ```
+
+⚠️ **Note:** While the `indexId` and other props can be defined here in the JSON configuration, they can also be configured through the VTEX Admin Site Editor interface.
 
 ## Props
 

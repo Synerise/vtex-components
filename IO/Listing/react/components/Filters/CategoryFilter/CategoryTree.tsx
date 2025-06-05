@@ -41,11 +41,14 @@ export function CategoryTree({
   useEffect(() => {
     setCategoriesState(queryFilters)
     setFilters((prevFilters) => {
+      const isHighestSelected = defaultFilter.includes(queryFilters[0])
+
       return {
         ...prevFilters,
-        [filterKey]: queryFilters.length
-          ? `${filterKey} IN ${JSON.stringify(queryFilters)}`
-          : defaultFilter,
+        [filterKey]:
+          queryFilters.length && !isHighestSelected
+            ? `${filterKey} IN ${JSON.stringify(queryFilters)}`
+            : defaultFilter,
       }
     })
   }, [defaultFilter, filterKey, setFilters, queryFilters])
