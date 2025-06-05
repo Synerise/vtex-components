@@ -1,6 +1,7 @@
 # Synerise Search Autocomplete
 
 ![Search Autocomplete](https://cdn.jsdelivr.net/gh/Synerise/vtex-components@main/IO/Search/docs/search-img.png)
+
 The `synerise-search` is a VTEX IO component that provides an intelligent search box with autocomplete, suggestions, and AI-powered product recommendations.
 
 ## Features
