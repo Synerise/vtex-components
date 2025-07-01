@@ -67,3 +67,14 @@ The `synerise-recommendations` block is designed to display slider with recommen
 | `displayAttributes` | `string` | An array of item attributes which value will be returned in a recommendation response. The array will be merged together with the configuration of the recommendation. A comma-separated list of attributes.|
 | `includeContextItems` | `boolean` | An array of item attributes which value will be returned in a recommendation response. The array will be merged together with the configuration of the recommendation. |
 <!-- prettier-ignore-end -->
+
+## Synerise events
+
+#### Automatically handled by Synerise API
+
+- `recommendation.generated` - Triggered when a recommendation is generated.
+- `recommendation.click` - Triggered when a user is redirected to the product page with a link from the recommendation.
+
+#### Manually added to component's frontend code
+
+- `recommendation.view` – Triggered when recommendation component is rendered. [See implementation](/IO/RecoSlider/react/components/RecoSlider.tsx#L68)
