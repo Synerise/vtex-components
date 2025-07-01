@@ -15,7 +15,8 @@ interface ItemProps {
 export function Item({ data, correlationId, searchType, position }: ItemProps) {
   const { link, imageLink, title, price, salePrice, itemId } = data
 
-  const path = new URL(link).pathname
+  const url = new URL(link)
+  const path = url.pathname + url.search
 
   const clickHandler = () => {
     if (typeof SR === 'undefined') return

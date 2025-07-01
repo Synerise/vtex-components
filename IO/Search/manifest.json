@@ -1,7 +1,7 @@
 {
   "vendor": "{YOUR_VENDOR_NAME}",
   "name": "synerise-search",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "title": "Synerise search",
   "description": "Search powered by Synerise",
   "builders": {
