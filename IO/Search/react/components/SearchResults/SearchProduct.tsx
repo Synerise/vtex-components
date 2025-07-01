@@ -29,10 +29,13 @@ export function SearchProduct({ product, position }: SearchProductProps) {
     })
   }
 
+  const url = new URL(product.link)
+  const path = url.pathname + url.search
+
   return (
     <li className={styles['product-list-item']}>
       <a
-        href={new URL(product.link).pathname}
+        href={path}
         onClick={clickHandler}
         className={styles['product-container']}
       >

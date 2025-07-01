@@ -11,9 +11,11 @@ interface RecoItemProps {
 
 export function RecoItem({ productData }: RecoItemProps) {
   const { title, price, salePrice, link, imageLink } = productData
+  const url = new URL(link)
+  const path = url.pathname + url.search
 
   return (
-    <a href={link} className={styles['slider-item']}>
+    <a href={path} className={styles['slider-item']}>
       <Image imageLink={imageLink} title={title} />
       <div className={styles.title}>{title}</div>
       <Price price={price.value} salePrice={salePrice.value} />

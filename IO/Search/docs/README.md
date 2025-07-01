@@ -13,6 +13,7 @@ The `synerise-search` is a VTEX IO component that provides an intelligent search
 - Customizable debounce time
 - Responsive dropdown
 - AI-powered relevance
+- Synerise events handling
 
 ## Configuration
 
@@ -94,3 +95,18 @@ The `synerise-search` is a VTEX IO component that provides an intelligent search
 - `recommendationHeadingNoResults`: Heading shown above no-results recommendations
 - `recommendationIdNoQuery`: Campaign ID for showing default products when search box is empty
 - `recommendationHeadingNoQuery`: Heading shown above empty-query recommendations
+
+## Synerise events
+
+> ℹ️ **Note:**  
+> Recommendation events will only be generated if recommendations are active in the search configuration.
+
+#### Automatically handled by Synerise API
+
+- `item.search` - Triggered when a search is performed.
+- `recommendation.click` - Triggered when a user is redirected to the product page with a link from the recommendation.
+
+#### Manually added to component's frontend code
+
+- `item.search.click` – Triggered when a user clicks a product in the search. [See implementation](/IO/Search/react/components/SearchResults/SearchProduct.tsx#L24)
+- `recommendation.view` – Triggered when recommendation component is rendered. [See implementation](/IO/Search/react/components/SearchResults/SearchResults.tsx#L61)

@@ -11,6 +11,7 @@ The `synerise-listing` is a VTEX IO component that provides product listing and 
 - Pagination
 - Responsive design
 - Product personalization
+- Synerise events handling
 
 ## Configuration
 
@@ -153,3 +154,13 @@ The `type` field determines how the filter will be displayed in the interface. T
 #### Filter Config Editor Title
 
 The optional `__editorItemTitle` field defines the configuration title that appears in the VTEX Admin interface when editing the component settings. If not specified, the `Filter item` value will be used instead.
+
+## Synerise events
+
+#### Automatically handled by Synerise API
+
+- `item.search` - Triggered when a search is performed.
+
+#### Manually added to component's frontend code
+
+- `item.search.click` – Triggered when a user clicks a product in the listing. [See implementation](/IO/Listing/react/components/ItemsList/Item/Item.tsx#L24)
