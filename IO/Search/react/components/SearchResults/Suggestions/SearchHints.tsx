@@ -50,7 +50,7 @@ export function SearchHints({ showPopular, showRecent }: SearchHintsProps) {
     variables: {
       indexId,
       clientUUID: SyneriseTC?.uuid,
-      limit: recentSearchesLimit,
+      windowSize: recentSearchesLimit,
     },
     fetchPolicy: 'cache-and-network',
     ssr: false,
@@ -67,6 +67,7 @@ export function SearchHints({ showPopular, showRecent }: SearchHintsProps) {
 
   if (urlQuery?.q && !recentSearches.includes(urlQuery.q)) {
     recentSearches.unshift(urlQuery.q)
+    recentSearches.length = Math.min(recentSearchesLimit, recentSearches.length)
   }
 
   if (
