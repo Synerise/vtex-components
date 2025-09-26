@@ -1,5 +1,6 @@
 import React, { useContext } from 'react'
 import { useQuery } from 'react-apollo'
+import { useRuntime } from 'vtex.render-runtime'
 
 import {
   getListingQuery,
@@ -9,7 +10,6 @@ import {
 import { SuggestionsList } from '.'
 import styles from './Suggestions.css'
 import { SearchContext } from '../../Search'
-import { useRuntime } from 'vtex.render-runtime'
 
 interface SearchHintsProps {
   showPopular: boolean
@@ -17,6 +17,7 @@ interface SearchHintsProps {
 }
 
 export function SearchHints({ showPopular, showRecent }: SearchHintsProps) {
+  const { query: urlQuery } = useRuntime()
   const {
     debouncedQuery: query,
     suggestionsIndexId,
@@ -25,7 +26,6 @@ export function SearchHints({ showPopular, showRecent }: SearchHintsProps) {
     popularSearchesLimit,
     recentSearchesLimit,
   } = useContext(SearchContext)
-  const { query: urlQuery } = useRuntime()
 
   const { data: suggestionsData } = useQuery(getSearchQuery, {
     variables: {
