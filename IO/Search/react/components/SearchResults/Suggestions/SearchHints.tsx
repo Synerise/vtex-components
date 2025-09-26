@@ -1,5 +1,6 @@
 import React, { useContext } from 'react'
 import { useQuery } from 'react-apollo'
+import { useRuntime } from 'vtex.render-runtime'
 
 import {
   getListingQuery,
@@ -16,6 +17,7 @@ interface SearchHintsProps {
 }
 
 export function SearchHints({ showPopular, showRecent }: SearchHintsProps) {
+  const { query: urlQuery } = useRuntime()
   const {
     debouncedQuery: query,
     suggestionsIndexId,
@@ -48,8 +50,9 @@ export function SearchHints({ showPopular, showRecent }: SearchHintsProps) {
     variables: {
       indexId,
       clientUUID: SyneriseTC?.uuid,
-      limit: recentSearchesLimit,
+      windowSize: recentSearchesLimit,
     },
+    fetchPolicy: 'cache-and-network',
     ssr: false,
     skip: !showRecent,
   })
@@ -60,7 +63,12 @@ export function SearchHints({ showPopular, showRecent }: SearchHintsProps) {
     popularSearchesData?.syneriseAISearch.listing.data ?? []
 
   const recentSearches =
-    recentSearchesData?.syneriseAISearch.recentSearches ?? []
+    Array.from(recentSearchesData?.syneriseAISearch.recentSearches) ?? []
+
+  if (urlQuery?.q && !recentSearches.includes(urlQuery.q)) {
+    recentSearches.unshift(urlQuery.q)
+    recentSearches.length = Math.min(recentSearchesLimit, recentSearches.length)
+  }
 
   if (
     !suggestions.length &&
