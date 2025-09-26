@@ -9,6 +9,7 @@ import {
 import { SuggestionsList } from '.'
 import styles from './Suggestions.css'
 import { SearchContext } from '../../Search'
+import { useRuntime } from 'vtex.render-runtime'
 
 interface SearchHintsProps {
   showPopular: boolean
@@ -24,6 +25,7 @@ export function SearchHints({ showPopular, showRecent }: SearchHintsProps) {
     popularSearchesLimit,
     recentSearchesLimit,
   } = useContext(SearchContext)
+  const { query: urlQuery } = useRuntime()
 
   const { data: suggestionsData } = useQuery(getSearchQuery, {
     variables: {
@@ -50,6 +52,7 @@ export function SearchHints({ showPopular, showRecent }: SearchHintsProps) {
       clientUUID: SyneriseTC?.uuid,
       limit: recentSearchesLimit,
     },
+    fetchPolicy: 'cache-and-network',
     ssr: false,
     skip: !showRecent,
   })
@@ -61,6 +64,10 @@ export function SearchHints({ showPopular, showRecent }: SearchHintsProps) {
 
   const recentSearches =
     recentSearchesData?.syneriseAISearch.recentSearches ?? []
+
+  if (urlQuery?.q && !recentSearches.includes(urlQuery.q)) {
+    recentSearches.unshift(urlQuery.q)
+  }
 
   if (
     !suggestions.length &&
