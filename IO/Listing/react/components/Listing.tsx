@@ -204,7 +204,7 @@ export function Listing({
       facets: filterableFacets.map((facet) => facet.key),
       includeFacets: 'none',
       filters: filtersIQL,
-      ...(sortBy !== DEFAULT_OPTS.sort ? { sortBy, ordering } : {}),
+      ...(sortBy !== 'relevance' ? { sortBy, ordering } : {}),
       page,
       limit: +pageSize,
     },
