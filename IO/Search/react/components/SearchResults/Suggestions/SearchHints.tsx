@@ -62,7 +62,7 @@ export function SearchHints({ showPopular, showRecent }: SearchHintsProps) {
   const popularSearches =
     popularSearchesData?.syneriseAISearch.listing.data ?? []
 
-  const recentSearches =
+  const recentSearches: string[] =
     Array.from(recentSearchesData?.syneriseAISearch.recentSearches) ?? []
 
   if (urlQuery?.q && !recentSearches.includes(urlQuery.q)) {
