@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react'
 import type { ChangeEvent } from 'react'
 import { FormattedNumber } from 'react-intl'
-import { useRuntime } from 'vtex.render-runtime'
 
 import styles from './PriceFilter.css'
-import type { FilterType } from '../utils'
+import { useSafeRuntime } from '../../../hooks'
+import { useListingContext } from '../../../context'
 
 const FILTER_DEBOUNCE_TIME_MS = 500
 
@@ -14,7 +14,6 @@ interface PriceFilterProps {
   defaultMin?: number
   defaultMax?: number
   filterKey: string
-  setFilters: React.Dispatch<React.SetStateAction<FilterType>>
   thumbWidth?: number
 }
 
@@ -22,10 +21,10 @@ export function PriceFilter({
   min,
   max,
   filterKey,
-  setFilters,
   thumbWidth = 8,
 }: PriceFilterProps) {
-  const { culture, setQuery, query } = useRuntime()
+  const { setFilters } = useListingContext()
+  const { culture, setQuerySafe, query } = useSafeRuntime()
   const { currency } = culture
   const filterMin = useRef<HTMLInputElement>(null)
   const filterMax = useRef<HTMLInputElement>(null)
@@ -63,7 +62,7 @@ export function PriceFilter({
     const priceFilterIQL = `${filterKey} >= ${filterMinValue} AND ${filterKey} <= ${filterMaxValue}`
 
     const timeout = setTimeout(() => {
-      setQuery({
+      setQuerySafe({
         priceMin: filterMinValue === min ? undefined : filterMinValue,
         priceMax: filterMaxValue === max ? undefined : filterMaxValue,
       })
@@ -82,7 +81,7 @@ export function PriceFilter({
     setFilters,
     min,
     max,
-    setQuery,
+    setQuerySafe,
   ])
 
   return (

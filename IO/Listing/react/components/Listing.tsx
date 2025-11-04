@@ -1,17 +1,8 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useQuery } from 'react-apollo'
-import type { QueryHookOptions } from 'react-apollo'
-import { useRuntime } from 'vtex.render-runtime'
+import React from 'react'
 
-import { getListingQuery, getSearchQuery } from '../graphql/Queries'
-import { Filters } from './Filters'
-import type { FilterType } from './Filters/utils'
-import styles from './ListingStyles.css'
-import { ItemsList, ItemsListContainer, ItemsListTopBar } from './ItemsList'
-import { Pagination } from './ItemsList/Pagination'
-import { SORTING_OPTIONS } from './ItemsList/Sorting'
-import type { OrderingType } from './ItemsList/Sorting'
 import type { FilterableFacetType } from '../types/FilterTypes'
+import { ListingContextProvider } from '../context'
+import { ListingSection } from './ListingSection'
 
 export type FacetType = Record<string, Record<string, number>>
 
@@ -31,13 +22,6 @@ const DEFAULT_FILTERS: FilterableFacetType[] = [
   { __editorItemTitle: 'Brand', key: 'brand', title: 'Brand', type: 'list' },
 ]
 
-const DEFAULT_OPTS = {
-  page: 1,
-  pageSize: '24',
-  sort: 'relevance',
-  order: SORTING_OPTIONS.ASC,
-}
-
 interface ListingProps {
   indexId: string
   personalize: boolean
@@ -55,240 +39,20 @@ interface ListingProps {
   ignoreQueryRules: boolean
 }
 
-export function Listing({
-  indexId,
-  personalize,
-  sortByMetric,
-  listingFilterAttribute = 'category',
-  filterableFacets = DEFAULT_FILTERS,
-  showFacetsValue = true,
-  facetsSize,
-  maxValuesPerFacet,
-  distinctFilter,
-  ignoreQueryRules,
-}: ListingProps) {
-  const { query, setQuery, route, deviceInfo } = useRuntime()
-  const {
-    department,
-    category = undefined,
-    subcategory = undefined,
-    term = undefined,
-  } = route.params
-
-  const searchQuery = query?.q ?? term
-  const path = [department, category, subcategory]
-    .filter((el) => !!el)
-    .join('>')
-    ?.replace(/---/g, ' & ')
-    .replace(/-/g, ' ')
-
-  const isSearch = !!searchQuery
-
-  const defaultAttributeFilter = !isSearch
-    ? `${listingFilterAttribute} IN ["${path}"]`
-    : ''
-
-  const defaultFilters = useMemo(
-    () => ({
-      [listingFilterAttribute]: defaultAttributeFilter,
-    }),
-    [listingFilterAttribute, defaultAttributeFilter]
-  )
-
-  const customFilteredFacets: Record<string, string> = useMemo(
-    () =>
-      filterableFacets.reduce(
-        (customFacets, facet) => ({
-          ...customFacets,
-          [facet.key]: defaultAttributeFilter,
-        }),
-        {}
-      ),
-    [defaultAttributeFilter, filterableFacets]
-  )
-
-  const correlationIdQuery = query?.correlationId
-  const pageQuery = Number(query?.page) || DEFAULT_OPTS.page
-  const pageSizeQuery = query?.pageSize ?? DEFAULT_OPTS.pageSize
-  const sortQuery = query?.sort ?? DEFAULT_OPTS.sort
-  const orderQuery =
-    query?.order === SORTING_OPTIONS.DESC
-      ? SORTING_OPTIONS.DESC
-      : SORTING_OPTIONS.ASC
-
-  const correlationId = useRef<string | undefined>(correlationIdQuery)
-  const [page, setPage] = useState(pageQuery)
-  const [pageSize, setPageSize] = useState(pageSizeQuery)
-  const [sortBy, setSortBy] = useState(sortQuery)
-  const [ordering, setOrdering] = useState<OrderingType>(orderQuery)
-  const [filters, setFilters] = useState<FilterType>(defaultFilters)
-
-  // disable url change on site editor panel
-  const isSiteEditor = route.queryString?.__siteEditor
-  const setQuerySafe = useCallback(
-    (q: Record<string, string | number | undefined>) =>
-      !isSiteEditor && setQuery(q),
-    [isSiteEditor, setQuery]
-  )
-
-  useEffect(() => {
-    // update listing settings with query change
-    setPage(pageQuery)
-    setPageSize(pageSizeQuery)
-    setSortBy(sortQuery)
-    setOrdering(orderQuery)
-  }, [pageQuery, pageSizeQuery, sortQuery, orderQuery])
-
-  const setPageHandler = (newPage: number) => {
-    setPage(newPage)
-    setQuerySafe({ page: newPage === DEFAULT_OPTS.page ? undefined : newPage })
-  }
-
-  const setPageSizeHandler = (newPageSize: string) => {
-    setPageSize(newPageSize)
-    setQuerySafe({
-      pageSize: newPageSize === DEFAULT_OPTS.pageSize ? undefined : newPageSize,
-    })
-  }
-
-  const setSortByHandler = (newSortBy: string) => {
-    setSortBy(newSortBy)
-    setQuerySafe({
-      sort: newSortBy === DEFAULT_OPTS.sort ? undefined : newSortBy,
-    })
-  }
-
-  const switchOrderingHandler = () => {
-    setOrdering((prev) => {
-      const newOrdering =
-        prev === SORTING_OPTIONS.ASC
-          ? SORTING_OPTIONS.DESC
-          : SORTING_OPTIONS.ASC
-
-      setQuerySafe({
-        order: newOrdering === DEFAULT_OPTS.order ? undefined : newOrdering,
-      })
-
-      return newOrdering
-    })
-  }
-
-  const filtersIQL = useMemo(() => {
-    return Object.values(filters)
-      .filter((filter) => filter.length)
-      .join(' AND ')
-  }, [filters])
-
-  useEffect(() => {
-    setFilters(defaultFilters)
-  }, [defaultFilters])
-
-  useEffect(() => {
-    // page reset to 1
-    setPage(DEFAULT_OPTS.page)
-    setTimeout(() => setQuerySafe({ page: undefined }))
-  }, [filters, pageSize, sortBy, ordering, setQuerySafe])
-
-  const commonQueryOptions: QueryHookOptions = {
-    variables: {
-      indexId,
-      query: searchQuery,
-      personalize,
-      correlationId: correlationId.current,
-      sortByMetric,
-      facetsSize,
-      maxValuesPerFacet,
-      ...(distinctFilter?.attribute ? { distinctFilter } : {}),
-      ignoreQueryRules,
-      customFilteredFacets,
-      facets: filterableFacets.map((facet) => facet.key),
-      includeFacets: 'none',
-      filters: filtersIQL,
-      ...(sortBy !== 'relevance' ? { sortBy, ordering } : {}),
-      page,
-      limit: +pageSize,
-    },
-    ssr: false,
-  }
-
-  const { data: searchData, loading: searchLoading } = useQuery(
-    getSearchQuery,
-    {
-      ...commonQueryOptions,
-      skip: !isSearch || !searchQuery,
-    }
-  )
-
-  const { data: listingData, loading: listingLoading } = useQuery(
-    getListingQuery,
-    {
-      ...commonQueryOptions,
-      skip: isSearch,
-    }
-  )
-
-  const loading = searchLoading || listingLoading
-
-  const data = isSearch
-    ? searchData?.syneriseAISearch.search
-    : listingData?.syneriseAISearch.listing
-
-  const totalPages = data?.meta.totalPages
-  const facets = data?.extras.customFilteredFacets
-  const resCorrelationId = data?.extras.correlationId
-
-  useEffect(() => {
-    correlationId.current = undefined
-    if (!resCorrelationId) return
-
-    setTimeout(() => setQuerySafe({ correlationId: resCorrelationId }))
-  }, [resCorrelationId, setQuerySafe])
-
+export function Listing(props: ListingProps) {
   return (
-    <section
-      className={`${styles['listing-container']} ${
-        loading ? styles.loading : ''
-      }`}
+    <ListingContextProvider
+      contextFilterAttribute={props.listingFilterAttribute}
     >
-      {facets && (
-        <Filters
-          facets={facets}
-          setFilters={setFilters}
-          filterableFacets={filterableFacets}
-          defaultAttribute={listingFilterAttribute}
-          defaultAttributeFilter={defaultAttributeFilter}
-          showFacetsValue={showFacetsValue}
-        />
-      )}
-      <ItemsListContainer>
-        <ItemsListTopBar
-          ordering={ordering}
-          switchOrdering={switchOrderingHandler}
-          sortBy={sortBy}
-          setSortBy={setSortByHandler}
-          pageSize={pageSize}
-          setPageSize={setPageSizeHandler}
-        />
-        {data?.data.length ? (
-          <ItemsList
-            items={data.data}
-            correlationId={resCorrelationId}
-            searchType={isSearch ? 'full-text-search' : 'listing'}
-          />
-        ) : (
-          !loading && "We can't find products matching the selection."
-        )}
-        {totalPages > 1 && (
-          <Pagination
-            page={page}
-            totalPages={totalPages}
-            onPageChange={setPageHandler}
-            maxVisible={deviceInfo.isMobile ? 3 : 5}
-          />
-        )}
-      </ItemsListContainer>
-    </section>
+      <ListingSection {...props} />
+    </ListingContextProvider>
   )
+}
+
+Listing.defaultProps = {
+  listingFilterAttribute: 'category',
+  filterableFacets: DEFAULT_FILTERS,
+  showFacetsValue: true,
 }
 
 Listing.schema = {

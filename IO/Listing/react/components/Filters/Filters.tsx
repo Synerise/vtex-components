@@ -7,25 +7,23 @@ import { PriceFilter } from './PriceFilter'
 import type { FacetType } from '../Listing'
 import { FILTERABLE_FACET_TYPES } from '../../types/FilterTypes'
 import type { FilterableFacetType } from '../../types/FilterTypes'
-import type { FilterType } from './utils'
+import { useListingContext } from '../../context'
 
 interface FiltersProps {
   facets: FacetType
-  setFilters: React.Dispatch<React.SetStateAction<FilterType>>
   filterableFacets: FilterableFacetType[]
   defaultAttribute: string
-  defaultAttributeFilter: string
   showFacetsValue: boolean
 }
 
 export function Filters({
   facets,
-  setFilters,
   filterableFacets,
   defaultAttribute,
-  defaultAttributeFilter,
   showFacetsValue,
 }: FiltersProps) {
+  const { defaultFilters } = useListingContext()
+
   return (
     <FiltersContainer>
       {filterableFacets.map(
@@ -39,9 +37,10 @@ export function Filters({
                 <CategoryTree
                   facets={facets[facet.key]}
                   filterKey={facet.key}
-                  setFilters={setFilters}
                   defaultFilter={
-                    facet.key === defaultAttribute ? defaultAttributeFilter : ''
+                    facet.key === defaultAttribute
+                      ? defaultFilters[defaultAttribute]
+                      : ''
                   }
                   showFacetCount={showFacetsValue}
                 />
@@ -51,16 +50,16 @@ export function Filters({
                   min={Math.floor(facets[facet.key].min)}
                   max={Math.ceil(facets[facet.key].max)}
                   filterKey={facet.key}
-                  setFilters={setFilters}
                 />
               )}
               {facet.type === FILTERABLE_FACET_TYPES.list && (
                 <AttributeList
                   filterKey={facet.key}
                   facets={facets[facet.key]}
-                  setFilters={setFilters}
                   defaultFilter={
-                    facet.key === defaultAttribute ? defaultAttributeFilter : ''
+                    facet.key === defaultAttribute
+                      ? defaultFilters[defaultAttribute]
+                      : ''
                   }
                   showFacetCount={showFacetsValue}
                 />

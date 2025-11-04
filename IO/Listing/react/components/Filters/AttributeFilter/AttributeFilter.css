@@ -65,12 +65,13 @@
 }
 
 .expand-btn {
-  min-width: 2rem;
+  width: 2rem;
   height: 2rem;
   text-align: center;
   margin-left: auto;
   background: none;
   border: none;
+  padding: 0;
   font-size: 1.25rem;
   transition: all 0.2s;
 }

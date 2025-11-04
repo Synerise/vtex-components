@@ -1,15 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import type { ChangeEvent } from 'react'
-import { useRuntime } from 'vtex.render-runtime'
 
 import { AttributeItem } from './AttributeItem'
 import styles from './AttributeFilter.css'
-import type { FilterType } from '../utils'
+import { useSafeRuntime } from '../../../hooks'
+import { useListingContext } from '../../../context'
 
 interface AttributeListProps {
   filterKey: string
   facets: Record<string, number>
-  setFilters: React.Dispatch<React.SetStateAction<FilterType>>
   defaultFilter: string
   showFacetCount?: boolean
 }
@@ -17,11 +16,11 @@ interface AttributeListProps {
 export function AttributeList({
   filterKey,
   facets,
-  setFilters,
   defaultFilter,
   showFacetCount = false,
 }: AttributeListProps) {
-  const { setQuery, query } = useRuntime()
+  const { setFilters } = useListingContext()
+  const { setQuerySafe, query } = useSafeRuntime()
   const attributeQuery: undefined | string | string[] = query?.[filterKey]
   const facetEntries = Object.entries(facets)
   const queryFilters = useMemo(
@@ -53,7 +52,7 @@ export function AttributeList({
         ? [...prev, value]
         : prev.filter((val) => value !== val)
 
-      setQuery({
+      setQuerySafe({
         [filterKey]: newItems.length
           ? newItems.join(',').replace(/ & /g, '---')
           : undefined,
