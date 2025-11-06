@@ -29,26 +29,24 @@ export function RangeFilter({
   const filterMin = useRef<HTMLInputElement>(null)
   const filterMax = useRef<HTMLInputElement>(null)
 
-  const rangeMin = `${filterKey}Min`
-  const rangeMax = `${filterKey}Max`
+  const keyMin = `${filterKey}Min`
+  const keyMax = `${filterKey}Max`
 
-  const defaultMin = safeQuery?.[rangeMin] ? +safeQuery[rangeMin] : min
-  const defaultMax = safeQuery?.[rangeMax] ? +safeQuery[rangeMax] : max
+  const rangeLocked = min === max
+  const defaultMin = rangeLocked ? min : Number(safeQuery?.[keyMin] ?? min)
+  const defaultMax = rangeLocked ? max : Number(safeQuery?.[keyMax] ?? max)
   const [filterMinValue, setfilterMinValue] = useState(defaultMin)
   const [filterMaxValue, setfilterMaxValue] = useState(defaultMax)
 
-  const onChangeMin = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = Math.min(+e.target.value, filterMaxValue)
+  const rangeMin = Math.min(min, filterMinValue)
+  const rangeMax = Math.max(max, filterMaxValue)
 
-    setfilterMinValue(value)
-    e.target.value = value.toString()
+  const onChangeMin = (e: ChangeEvent<HTMLInputElement>) => {
+    setfilterMinValue(+e.target.value)
   }
 
   const onChangeMax = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = Math.max(filterMinValue, +e.target.value)
-
-    setfilterMaxValue(value)
-    e.target.value = value.toString()
+    setfilterMaxValue(+e.target.value)
   }
 
   // initial filter values
@@ -66,8 +64,8 @@ export function RangeFilter({
 
     const timeout = setTimeout(() => {
       setSafeQuery({
-        [rangeMin]: filterMinValue === min ? undefined : filterMinValue,
-        [rangeMax]: filterMaxValue === max ? undefined : filterMaxValue,
+        [keyMin]: filterMinValue === min ? undefined : filterMinValue,
+        [keyMax]: filterMaxValue === max ? undefined : filterMaxValue,
       })
 
       setFilters((prev) => ({
@@ -85,8 +83,8 @@ export function RangeFilter({
     min,
     max,
     setSafeQuery,
-    rangeMin,
-    rangeMax,
+    keyMin,
+    keyMax,
   ])
 
   return (
@@ -116,10 +114,10 @@ export function RangeFilter({
           className={styles.range}
           style={{
             marginLeft: `calc(${
-              ((filterMinValue - min) / (max - min)) * 100
+              ((filterMinValue - rangeMin) / (rangeMax - rangeMin)) * 100
             }% - ${thumbWidth / 2}px)`,
             width: `calc(${
-              ((filterMaxValue - filterMinValue) / (max - min)) * 100
+              ((filterMaxValue - filterMinValue) / (rangeMax - rangeMin)) * 100
             }% + ${thumbWidth}px)`,
           }}
         />
@@ -127,19 +125,21 @@ export function RangeFilter({
           className={`${styles['range-slider']} ${styles['range-slider--min']}`}
           ref={filterMin}
           type="range"
-          min={min}
-          max={max}
+          min={rangeMin}
+          max={rangeMax}
           value={filterMinValue}
           onChange={onChangeMin}
+          disabled={rangeMin === rangeMax}
         />
         <input
           className={`${styles['range-slider']} ${styles['range-slider--max']}`}
           ref={filterMax}
           type="range"
-          min={min}
-          max={max}
+          min={rangeMin}
+          max={rangeMax}
           value={filterMaxValue}
           onChange={onChangeMax}
+          disabled={rangeMin === rangeMax}
         />
       </div>
     </div>

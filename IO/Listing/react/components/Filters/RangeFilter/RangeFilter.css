@@ -80,6 +80,11 @@
   transform: translateX(50%);
 }
 
+.range-slider--max:disabled::-webkit-slider-thumb {
+  left: 100%;
+  transform: translateX(-50%);
+}
+
 /* For Firefox */
 .range-slider::-moz-range-thumb {
   background-color: #444;
@@ -100,4 +105,9 @@
 
 .range-slider--max::-moz-range-thumb {
   transform: translateX(50%);
+}
+
+.range-slider--max:disabled::-moz-range-thumb {
+  left: 100%;
+  transform: translateX(-50%);
 }
