@@ -3,7 +3,7 @@ import React from 'react'
 import { FiltersContainer } from './FiltersContainer'
 import { AttributeFilter, AttributeList } from './AttributeFilter'
 import { CategoryTree } from './CategoryFilter'
-import { PriceFilter } from './PriceFilter'
+import { RangeFilter } from './RangeFilter'
 import type { FacetType } from '../Listing'
 import { FILTERABLE_FACET_TYPES } from '../../types/FilterTypes'
 import type { FilterableFacetType } from '../../types/FilterTypes'
@@ -45,8 +45,8 @@ export function Filters({
                   showFacetCount={showFacetsValue}
                 />
               )}
-              {facet.type === FILTERABLE_FACET_TYPES.price && (
-                <PriceFilter
+              {facet.type === FILTERABLE_FACET_TYPES.range && (
+                <RangeFilter
                   min={Math.floor(facets[facet.key].min)}
                   max={Math.ceil(facets[facet.key].max)}
                   filterKey={facet.key}

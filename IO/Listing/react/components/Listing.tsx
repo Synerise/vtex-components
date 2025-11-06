@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { FILTERABLE_FACET_TYPES } from '../types/FilterTypes'
 import type { FilterableFacetType } from '../types/FilterTypes'
 import { ListingContextProvider } from '../context'
 import { ListingSection } from './ListingSection'
@@ -11,15 +12,20 @@ const DEFAULT_FILTERS: FilterableFacetType[] = [
     __editorItemTitle: 'Category',
     key: 'category',
     title: 'Category',
-    type: 'tree',
+    type: FILTERABLE_FACET_TYPES.tree,
   },
   {
-    __editorItemTitle: 'Price',
+    __editorItemTitle: 'Range',
     key: 'salePrice.value',
     title: 'Price',
-    type: 'price',
+    type: FILTERABLE_FACET_TYPES.range,
   },
-  { __editorItemTitle: 'Brand', key: 'brand', title: 'Brand', type: 'list' },
+  {
+    __editorItemTitle: 'Brand',
+    key: 'brand',
+    title: 'Brand',
+    type: FILTERABLE_FACET_TYPES.list,
+  },
 ]
 
 interface ListingProps {
@@ -108,7 +114,7 @@ Listing.schema = {
           type: {
             title: 'Type',
             type: 'string',
-            enum: ['list', 'tree', 'price'],
+            enum: ['list', 'tree', 'range'],
             description: 'Type of the filter to be applied.',
           },
         },

@@ -1,6 +1,6 @@
 export const FILTERABLE_FACET_TYPES = {
   tree: 'tree',
-  price: 'price',
+  range: 'price',
   list: 'list',
 } as const
 export type FilterableFacetTypes =

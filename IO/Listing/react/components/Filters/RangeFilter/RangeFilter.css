@@ -1,19 +1,19 @@
-.price-filter__container {
+.range-filter__container {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
-.price-values__container {
+.range-values__container {
   display: flex;
   justify-content: space-between;
 }
 
-.price-value {
+.range-value {
   color: #777;
 }
 
-.price-sliders__container {
+.range-sliders__container {
   position: relative;
   height: 20px;
 }
@@ -40,7 +40,7 @@
   background-color: #444;
 }
 
-.price-slider {
+.range-slider {
   margin: 0;
   padding: 0;
   position: absolute;
@@ -53,13 +53,13 @@
   z-index: 5;
 }
 
-.price-slider,
-.price-slider::-webkit-slider-thumb {
+.range-slider,
+.range-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   -webkit-tap-highlight-color: transparent;
 }
 
-.price-slider::-webkit-slider-thumb {
+.range-slider::-webkit-slider-thumb {
   background-color: #444;
   border: none;
   border-radius: 2px;
@@ -72,16 +72,16 @@
   position: relative;
 }
 
-.price-slider--min::-webkit-slider-thumb {
+.range-slider--min::-webkit-slider-thumb {
   transform: translateX(-50%);
 }
 
-.price-slider--max::-webkit-slider-thumb {
+.range-slider--max::-webkit-slider-thumb {
   transform: translateX(50%);
 }
 
 /* For Firefox */
-.price-slider::-moz-range-thumb {
+.range-slider::-moz-range-thumb {
   background-color: #444;
   border: none;
   border-radius: 2px;
@@ -94,10 +94,10 @@
   position: relative;
 }
 
-.price-slider--min::-moz-range-thumb {
+.range-slider--min::-moz-range-thumb {
   transform: translateX(-50%);
 }
 
-.price-slider--max::-moz-range-thumb {
+.range-slider--max::-moz-range-thumb {
   transform: translateX(50%);
 }

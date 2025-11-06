@@ -48,7 +48,8 @@ export function ListingSection({
         distinctFilter,
         ignoreQueryRules,
       },
-      filterableFacets
+      filterableFacets,
+      listingFilterAttribute
     )
 
   return (

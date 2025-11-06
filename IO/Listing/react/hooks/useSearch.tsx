@@ -23,7 +23,8 @@ type IndexOpts = {
 
 export function useSearch(
   indexOpts: IndexOpts,
-  filterableFacets: FilterableFacetType[]
+  filterableFacets: FilterableFacetType[],
+  defaultFilterAttribute: string
 ) {
   const { setSafeQuery, safeQuery, route } = useSafeRuntime()
   const { term = undefined } = route.params
@@ -52,18 +53,13 @@ export function useSearch(
       filtered.push(filters[filterKey])
 
       // The maximum number of customFilteredFacets attributes is 10
-      if (Object.keys(facets).length > 10) {
-        const facetValue = Object.entries(filters)
-          .filter(([key, value]) => filterKey !== key && value.length)
-          .map(([_, value]) => value)
-          .join(' AND ')
-
-        facets[filterKey] = facetValue.length ? facetValue : facets[filterKey]
+      if (Object.keys(facets).length < 10) {
+        facets[filterKey] = defaultFilters[defaultFilterAttribute]
       }
     }
 
     return [filtered.join(' AND '), facets]
-  }, [filters, defaultFilters, filterableFacets])
+  }, [filters, defaultFilters, filterableFacets, defaultFilterAttribute])
 
   const variables = {
     ...options,
