@@ -19,14 +19,11 @@ export function CategoryTree({
   showFacetCount = false,
 }: CategoryTreeProps) {
   const { setFilters } = useListingContext()
-  const { setQuerySafe, query } = useSafeRuntime()
-  const categoriesQuery: undefined | string = query?.[filterKey]
+  const { setSafeQuery, safeQuery } = useSafeRuntime()
+  const categoriesQuery: undefined | string = safeQuery?.[filterKey]
+
   const queryFilters = useMemo(
-    () =>
-      categoriesQuery
-        ?.replace(/---/g, ' & ')
-        .split(',')
-        .filter((cat) => cat.length) ?? [],
+    () => categoriesQuery?.split(',').filter((cat) => cat.length) ?? [],
     [categoriesQuery]
   )
 
@@ -52,13 +49,11 @@ export function CategoryTree({
     })
   }, [defaultFilter, filterKey, setFilters, queryFilters])
 
-  const updateFilters = (selectedCategories: string[]) => {
-    setQuerySafe({
-      [filterKey]: selectedCategories.length
-        ? selectedCategories.join(',').replace(/ & /g, '---')
-        : undefined,
+  const updateFilters = (selected: string[]) => {
+    setSafeQuery({
+      [filterKey]: selected.length ? selected.join(',') : undefined,
     })
-    setCategoriesState(selectedCategories)
+    setCategoriesState(selected)
   }
 
   return (

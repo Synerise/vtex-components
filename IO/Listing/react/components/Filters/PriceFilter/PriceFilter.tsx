@@ -24,13 +24,13 @@ export function PriceFilter({
   thumbWidth = 8,
 }: PriceFilterProps) {
   const { setFilters } = useListingContext()
-  const { culture, setQuerySafe, query } = useSafeRuntime()
+  const { culture, setSafeQuery, safeQuery } = useSafeRuntime()
   const { currency } = culture
   const filterMin = useRef<HTMLInputElement>(null)
   const filterMax = useRef<HTMLInputElement>(null)
 
-  const defaultMin = query?.priceMin ? +query.priceMin : min
-  const defaultMax = query?.priceMax ? +query.priceMax : max
+  const defaultMin = safeQuery?.priceMin ? +safeQuery.priceMin : min
+  const defaultMax = safeQuery?.priceMax ? +safeQuery.priceMax : max
   const [filterMinValue, setfilterMinValue] = useState(defaultMin)
   const [filterMaxValue, setfilterMaxValue] = useState(defaultMax)
 
@@ -62,7 +62,7 @@ export function PriceFilter({
     const priceFilterIQL = `${filterKey} >= ${filterMinValue} AND ${filterKey} <= ${filterMaxValue}`
 
     const timeout = setTimeout(() => {
-      setQuerySafe({
+      setSafeQuery({
         priceMin: filterMinValue === min ? undefined : filterMinValue,
         priceMax: filterMaxValue === max ? undefined : filterMaxValue,
       })
@@ -81,7 +81,7 @@ export function PriceFilter({
     setFilters,
     min,
     max,
-    setQuerySafe,
+    setSafeQuery,
   ])
 
   return (

@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useQuery } from 'react-apollo'
-import type { QueryHookOptions } from 'react-apollo'
 
 import type { FilterableFacetType } from '../types/FilterTypes'
 import { getListingQuery, getSearchQuery } from '../graphql/Queries'
 import { useSafeRuntime } from './useSafeRuntime'
 import { useListingContext } from '../context'
+import type { FilterType } from '../components/Filters/utils'
 
 type IndexOpts = {
   indexId: string
@@ -25,67 +25,75 @@ export function useSearch(
   indexOpts: IndexOpts,
   filterableFacets: FilterableFacetType[]
 ) {
-  const { setQuerySafe, query, route } = useSafeRuntime()
+  const { setSafeQuery, safeQuery, route } = useSafeRuntime()
   const { term = undefined } = route.params
 
   const { distinctFilter, ...options } = indexOpts
-  const correlationIdQuery = query?.correlationId
+  const correlationIdQuery = safeQuery?.correlationId
   const correlationId = useRef<string | undefined>(correlationIdQuery)
 
-  const searchQuery = query?.q ?? term
+  const searchQuery = safeQuery?.q ?? term
 
   const isSearch = !!searchQuery
 
-  const { sortBy, ordering, page, pageSize, filters } = useListingContext()
+  const { sortBy, ordering, page, pageSize, filters, defaultFilters } =
+    useListingContext()
 
-  const filtersIQL = useMemo(() => {
-    return Object.values(filters)
-      .filter((filter) => filter.length)
-      .join(' AND ')
-  }, [filters])
+  const [filtersIQL, customFilteredFacets] = useMemo(() => {
+    const facets: FilterType = { ...defaultFilters }
+    const filtered: string[] = []
 
-  const customFilteredFacets: Record<string, string> = useMemo(
-    () =>
-      filterableFacets.reduce(
-        (customFacets, facet) => ({
-          ...customFacets,
-          [facet.key]: filtersIQL,
-        }),
-        {}
-      ),
-    [filtersIQL, filterableFacets]
-  )
+    // To iterate over selected filterable facets where first is the most important and the last is the least important
+    const activeFilters = filterableFacets.filter(
+      (facet) => filters[facet.key]?.length
+    )
 
-  const commonQueryOptions: QueryHookOptions = {
-    variables: {
-      ...options,
-      query: searchQuery,
-      correlationId: correlationId.current,
-      ...(distinctFilter?.attribute ? { distinctFilter } : {}),
-      customFilteredFacets,
-      facets: filterableFacets.map((facet) => facet.key),
-      includeFacets: 'none',
-      filters: filtersIQL,
-      ...(sortBy !== 'relevance' ? { sortBy, ordering } : {}),
-      page,
-      limit: +pageSize,
-    },
-    ssr: false,
+    for (const { key: filterKey } of activeFilters) {
+      filtered.push(filters[filterKey])
+
+      // The maximum number of customFilteredFacets attributes is 10
+      if (Object.keys(facets).length > 10) {
+        const facetValue = Object.entries(filters)
+          .filter(([key, value]) => filterKey !== key && value.length)
+          .map(([_, value]) => value)
+          .join(' AND ')
+
+        facets[filterKey] = facetValue.length ? facetValue : facets[filterKey]
+      }
+    }
+
+    return [filtered.join(' AND '), facets]
+  }, [filters, defaultFilters, filterableFacets])
+
+  const variables = {
+    ...options,
+    ...(distinctFilter?.attribute ? { distinctFilter } : {}),
+    ...(sortBy !== 'relevance' ? { sortBy, ordering } : {}),
+    facets: filterableFacets.map((facet) => facet.key),
+    correlationId: correlationId.current,
+    includeFacets: 'filtered',
+    customFilteredFacets,
+    filters: filtersIQL,
+    query: searchQuery,
+    limit: +pageSize,
+    page,
   }
 
   const { data: searchData, loading: searchLoading } = useQuery(
     getSearchQuery,
     {
-      ...commonQueryOptions,
+      variables,
       skip: !isSearch || !searchQuery,
+      ssr: false,
     }
   )
 
   const { data: listingData, loading: listingLoading } = useQuery(
     getListingQuery,
     {
-      ...commonQueryOptions,
+      variables,
       skip: isSearch,
+      ssr: false,
     }
   )
 
@@ -96,15 +104,18 @@ export function useSearch(
     : listingData?.syneriseAISearch.listing
 
   const totalPages = data?.meta.totalPages
-  const facets = data?.extras.customFilteredFacets
   const resCorrelationId = data?.extras.correlationId
+  const facets = {
+    ...data?.extras.filteredFacets,
+    ...data?.extras.customFilteredFacets,
+  }
 
   useEffect(() => {
     correlationId.current = undefined
     if (!resCorrelationId) return
 
-    setTimeout(() => setQuerySafe({ correlationId: resCorrelationId }))
-  }, [resCorrelationId, setQuerySafe])
+    setTimeout(() => setSafeQuery({ correlationId: resCorrelationId }))
+  }, [resCorrelationId, setSafeQuery])
 
   return { loading, data, totalPages, facets, isSearch, resCorrelationId }
 }

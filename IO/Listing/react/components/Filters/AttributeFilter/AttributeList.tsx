@@ -20,15 +20,12 @@ export function AttributeList({
   showFacetCount = false,
 }: AttributeListProps) {
   const { setFilters } = useListingContext()
-  const { setQuerySafe, query } = useSafeRuntime()
-  const attributeQuery: undefined | string | string[] = query?.[filterKey]
+  const { setSafeQuery, safeQuery } = useSafeRuntime()
   const facetEntries = Object.entries(facets)
+  const attributeQuery: undefined | string = safeQuery?.[filterKey]
+
   const queryFilters = useMemo(
-    () =>
-      attributeQuery
-        ?.replace(/---/g, ' & ')
-        .split(',')
-        .filter((attr) => attr.length) ?? [],
+    () => attributeQuery?.split(',').filter((attr) => attr.length) ?? [],
     [attributeQuery]
   )
 
@@ -52,10 +49,8 @@ export function AttributeList({
         ? [...prev, value]
         : prev.filter((val) => value !== val)
 
-      setQuerySafe({
-        [filterKey]: newItems.length
-          ? newItems.join(',').replace(/ & /g, '---')
-          : undefined,
+      setSafeQuery({
+        [filterKey]: newItems.length ? newItems.join(',') : undefined,
       })
 
       return newItems

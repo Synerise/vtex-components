@@ -58,6 +58,7 @@ query getSearchQuery(
       extras {
         customFilteredFacets
         correlationId
+        filteredFacets
       }
       meta {
         totalPages

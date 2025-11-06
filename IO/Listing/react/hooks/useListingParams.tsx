@@ -13,13 +13,13 @@ const DEFAULT_OPTS = {
 }
 
 export function useListingParams(defaultFilters: FilterType) {
-  const { setQuerySafe, query } = useSafeRuntime()
+  const { setSafeQuery, safeQuery } = useSafeRuntime()
 
-  const pageQuery = Number(query?.page) || DEFAULT_OPTS.page
-  const pageSizeQuery = query?.pageSize ?? DEFAULT_OPTS.pageSize
-  const sortQuery = query?.sort ?? DEFAULT_OPTS.sort
+  const pageQuery = Number(safeQuery?.page) || DEFAULT_OPTS.page
+  const pageSizeQuery = safeQuery?.pageSize ?? DEFAULT_OPTS.pageSize
+  const sortQuery = safeQuery?.sort ?? DEFAULT_OPTS.sort
   const orderQuery =
-    query?.order === SORTING_OPTIONS.DESC
+    safeQuery?.order === SORTING_OPTIONS.DESC
       ? SORTING_OPTIONS.DESC
       : SORTING_OPTIONS.ASC
 
@@ -31,19 +31,19 @@ export function useListingParams(defaultFilters: FilterType) {
 
   const setPageHandler = (newPage: number) => {
     setPage(newPage)
-    setQuerySafe({ page: newPage === DEFAULT_OPTS.page ? undefined : newPage })
+    setSafeQuery({ page: newPage === DEFAULT_OPTS.page ? undefined : newPage })
   }
 
   const setPageSizeHandler = (newPageSize: string) => {
     setPageSize(newPageSize)
-    setQuerySafe({
+    setSafeQuery({
       pageSize: newPageSize === DEFAULT_OPTS.pageSize ? undefined : newPageSize,
     })
   }
 
   const setSortByHandler = (newSortBy: string) => {
     setSortBy(newSortBy)
-    setQuerySafe({
+    setSafeQuery({
       sort: newSortBy === DEFAULT_OPTS.sort ? undefined : newSortBy,
     })
   }
@@ -55,7 +55,7 @@ export function useListingParams(defaultFilters: FilterType) {
           ? SORTING_OPTIONS.DESC
           : SORTING_OPTIONS.ASC
 
-      setQuerySafe({
+      setSafeQuery({
         order: newOrdering === DEFAULT_OPTS.order ? undefined : newOrdering,
       })
 
@@ -78,8 +78,8 @@ export function useListingParams(defaultFilters: FilterType) {
   useEffect(() => {
     // page reset to 1
     setPage(DEFAULT_OPTS.page)
-    setTimeout(() => setQuerySafe({ page: undefined }))
-  }, [filters, pageSize, sortBy, ordering, setQuerySafe])
+    setTimeout(() => setSafeQuery({ page: undefined }))
+  }, [filters, pageSize, sortBy, ordering, setSafeQuery])
 
   return {
     sortBy,
