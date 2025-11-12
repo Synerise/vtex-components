@@ -42,11 +42,19 @@ export function RangeFilter({
   const rangeMax = Math.max(max, filterMaxValue)
 
   const onChangeMin = (e: ChangeEvent<HTMLInputElement>) => {
-    setfilterMinValue(+e.target.value)
+    const value = Math.min(+e.target.value, filterMaxValue)
+
+    setfilterMinValue(value)
+
+    e.target.value = value.toString()
   }
 
   const onChangeMax = (e: ChangeEvent<HTMLInputElement>) => {
-    setfilterMaxValue(+e.target.value)
+    const value = Math.max(+e.target.value, filterMinValue)
+
+    setfilterMaxValue(value)
+
+    e.target.value = value.toString()
   }
 
   // initial filter values
