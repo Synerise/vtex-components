@@ -40,7 +40,7 @@ export function useSearch(
     useListingContext()
 
   const [filtersIQL, customFilteredFacets] = useMemo(() => {
-    const facets: FilterType = { ...defaultFilters }
+    const facets: FilterType = {}
     const filtered: string[] = []
 
     // To iterate over selected filterable facets where first is the most important and the last is the least important
@@ -61,7 +61,7 @@ export function useSearch(
           })
           .join(' AND ')
 
-        facets[filterKey] = facetValue.length ? facetValue : facets[filterKey]
+        facets[filterKey] = facetValue
       }
     }
 
