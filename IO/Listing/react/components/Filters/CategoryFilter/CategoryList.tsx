@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { reduceTreeToBranchingPoint } from './utils'
 import type { CategoryTreeType } from './utils'
 import { CategoryItem } from './CategoryItem'
 import styles from './CategoryFilter.css'
@@ -18,15 +19,7 @@ export function CategoryList({
   expanded = true,
   showFacetCount = false,
 }: CategoryListProps) {
-  const categoriesEntries = Object.entries(categoryTree)
-  const childrenEntries = Object.entries(
-    categoriesEntries[0]?.[1].children ?? {}
-  )
-
-  const categories =
-    categoriesEntries.length > 1 || !childrenEntries.length
-      ? categoriesEntries
-      : childrenEntries
+  const categories = Object.entries(reduceTreeToBranchingPoint(categoryTree))
 
   return (
     <ul className={`${filterStyles.list} ${expanded ? '' : styles.hidden}`}>

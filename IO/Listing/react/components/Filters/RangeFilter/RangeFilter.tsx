@@ -1,51 +1,59 @@
 import React, { useEffect, useRef, useState } from 'react'
 import type { ChangeEvent } from 'react'
 import { FormattedNumber } from 'react-intl'
-import { useRuntime } from 'vtex.render-runtime'
 
-import styles from './PriceFilter.css'
-import type { FilterType } from '../utils'
+import styles from './RangeFilter.css'
+import { useSafeRuntime } from '../../../hooks'
+import { useListingContext } from '../../../context'
 
 const FILTER_DEBOUNCE_TIME_MS = 500
 
-interface PriceFilterProps {
+interface RangeFilterProps {
   min: number
   max: number
   defaultMin?: number
   defaultMax?: number
   filterKey: string
-  setFilters: React.Dispatch<React.SetStateAction<FilterType>>
   thumbWidth?: number
 }
 
-export function PriceFilter({
+export function RangeFilter({
   min,
   max,
   filterKey,
-  setFilters,
   thumbWidth = 8,
-}: PriceFilterProps) {
-  const { culture, setQuery, query } = useRuntime()
+}: RangeFilterProps) {
+  const { setFilters } = useListingContext()
+  const { culture, setSafeQuery, safeQuery } = useSafeRuntime()
   const { currency } = culture
   const filterMin = useRef<HTMLInputElement>(null)
   const filterMax = useRef<HTMLInputElement>(null)
 
-  const defaultMin = query?.priceMin ? +query.priceMin : min
-  const defaultMax = query?.priceMax ? +query.priceMax : max
+  const keyMin = `${filterKey}Min`
+  const keyMax = `${filterKey}Max`
+
+  const rangeLocked = min === max
+  const defaultMin = rangeLocked ? min : Number(safeQuery?.[keyMin] ?? min)
+  const defaultMax = rangeLocked ? max : Number(safeQuery?.[keyMax] ?? max)
   const [filterMinValue, setfilterMinValue] = useState(defaultMin)
   const [filterMaxValue, setfilterMaxValue] = useState(defaultMax)
+
+  const rangeMin = Math.min(min, filterMinValue)
+  const rangeMax = Math.max(max, filterMaxValue)
 
   const onChangeMin = (e: ChangeEvent<HTMLInputElement>) => {
     const value = Math.min(+e.target.value, filterMaxValue)
 
     setfilterMinValue(value)
+
     e.target.value = value.toString()
   }
 
   const onChangeMax = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = Math.max(filterMinValue, +e.target.value)
+    const value = Math.max(+e.target.value, filterMinValue)
 
     setfilterMaxValue(value)
+
     e.target.value = value.toString()
   }
 
@@ -60,17 +68,17 @@ export function PriceFilter({
     if (!filterMin.current || !filterMax.current) return
 
     const isMinMaxSet = filterMinValue === min && filterMaxValue === max
-    const priceFilterIQL = `${filterKey} >= ${filterMinValue} AND ${filterKey} <= ${filterMaxValue}`
+    const rangeFilterIQL = `${filterKey} >= ${filterMinValue} AND ${filterKey} <= ${filterMaxValue}`
 
     const timeout = setTimeout(() => {
-      setQuery({
-        priceMin: filterMinValue === min ? undefined : filterMinValue,
-        priceMax: filterMaxValue === max ? undefined : filterMaxValue,
+      setSafeQuery({
+        [keyMin]: filterMinValue === min ? undefined : filterMinValue,
+        [keyMax]: filterMaxValue === max ? undefined : filterMaxValue,
       })
 
       setFilters((prev) => ({
         ...prev,
-        [`${filterKey}`]: isMinMaxSet ? '' : priceFilterIQL,
+        [`${filterKey}`]: isMinMaxSet ? '' : rangeFilterIQL,
       }))
     }, FILTER_DEBOUNCE_TIME_MS)
 
@@ -82,23 +90,25 @@ export function PriceFilter({
     setFilters,
     min,
     max,
-    setQuery,
+    setSafeQuery,
+    keyMin,
+    keyMax,
   ])
 
   return (
     <div
-      className={styles['price-filter__container']}
+      className={styles['range-filter__container']}
       style={{ '--thumb-width': `${thumbWidth}px` } as React.CSSProperties}
     >
-      <div className={styles['price-values__container']}>
-        <span className={styles['price-value']}>
+      <div className={styles['range-values__container']}>
+        <span className={styles['range-value']}>
           <FormattedNumber
             value={filterMinValue}
             style="currency"
             currency={currency}
           />
         </span>
-        <span className={styles['price-value']}>
+        <span className={styles['range-value']}>
           <FormattedNumber
             value={filterMaxValue}
             style="currency"
@@ -106,36 +116,38 @@ export function PriceFilter({
           />
         </span>
       </div>
-      <div className={styles['price-sliders__container']}>
+      <div className={styles['range-sliders__container']}>
         <div className={styles.track} />
         <div
           className={styles.range}
           style={{
             marginLeft: `calc(${
-              ((filterMinValue - min) / (max - min)) * 100
+              ((filterMinValue - rangeMin) / (rangeMax - rangeMin)) * 100
             }% - ${thumbWidth / 2}px)`,
             width: `calc(${
-              ((filterMaxValue - filterMinValue) / (max - min)) * 100
+              ((filterMaxValue - filterMinValue) / (rangeMax - rangeMin)) * 100
             }% + ${thumbWidth}px)`,
           }}
         />
         <input
-          className={`${styles['price-slider']} ${styles['price-slider--min']}`}
+          className={`${styles['range-slider']} ${styles['range-slider--min']}`}
           ref={filterMin}
           type="range"
-          min={min}
-          max={max}
+          min={rangeMin}
+          max={rangeMax}
           value={filterMinValue}
           onChange={onChangeMin}
+          disabled={rangeMin === rangeMax}
         />
         <input
-          className={`${styles['price-slider']} ${styles['price-slider--max']}`}
+          className={`${styles['range-slider']} ${styles['range-slider--max']}`}
           ref={filterMax}
           type="range"
-          min={min}
-          max={max}
+          min={rangeMin}
+          max={rangeMax}
           value={filterMaxValue}
           onChange={onChangeMax}
+          disabled={rangeMin === rangeMax}
         />
       </div>
     </div>

@@ -116,3 +116,14 @@ export function mapCategoriesToTree(
 
   return formattedData
 }
+
+export function reduceTreeToBranchingPoint(
+  tree: CategoryTreeType
+): CategoryTreeType {
+  const branches = Object.values(tree)
+  const [{ children }] = branches
+
+  if (branches.length !== 1 || !Object.keys(children).length) return tree
+
+  return reduceTreeToBranchingPoint(children)
+}

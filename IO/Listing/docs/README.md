@@ -117,7 +117,7 @@ The `synerise-listing` is a VTEX IO component that provides product listing and 
   {
     "key": "salePrice.value",
     "title": "Price",
-    "type": "price"
+    "type": "range"
   },
   {
     "key": "brand",
@@ -148,7 +148,7 @@ The `title` field defines the display name of the filter that will be shown to u
 The `type` field determines how the filter will be displayed in the interface. The component supports three types of filters:
 
 - `tree`: Hierarchical structure (e.g., categories)
-- `price`: Range selector with min/max values
+- `range`: Range selector with min/max values
 - `list`: Simple checkbox list (e.g., brands)
 
 #### Filter Config Editor Title

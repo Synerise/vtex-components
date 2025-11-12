@@ -56,6 +56,7 @@ query getListingQuery(
       extras {
         customFilteredFacets
         correlationId
+        filteredFacets
       }
       meta {
         totalPages

@@ -3,26 +3,18 @@ import React from 'react'
 import { Select } from '../../UI'
 import { SortOrdering } from './SortOrdering'
 import styles from './Sort.css'
+import { useListingContext } from '../../../context'
 
-interface SortControlProps {
-  sortBy: string
-  setSortBy: (value: string) => void
-  switchOrdering: () => void
-  ordering: string
-}
+export function SortControl() {
+  const { sortBy, setSortByHandler, ordering, switchOrderingHandler } =
+    useListingContext()
 
-export function SortControl({
-  sortBy,
-  setSortBy,
-  switchOrdering,
-  ordering,
-}: SortControlProps) {
   return (
     <div className={styles['sort-control']}>
       <Select
         id="sortBySelect"
         label="Sort by"
-        selectHandler={setSortBy}
+        selectHandler={setSortByHandler}
         value={sortBy}
         options={[
           { value: 'relevance', label: 'Relevance' },
@@ -30,7 +22,10 @@ export function SortControl({
           { value: 'salePrice.value', label: 'Price' },
         ]}
       />
-      <SortOrdering ordering={ordering} switchOrdering={switchOrdering} />
+      <SortOrdering
+        ordering={ordering}
+        switchOrdering={switchOrderingHandler}
+      />
     </div>
   )
 }

@@ -5,7 +5,11 @@ import filterStyles from '../AttributeFilter/AttributeFilter.css'
 import { CATEGORY_STATE, setCheckedCategory } from './utils'
 import type { CategoryLevelType } from './utils'
 import { CategoryList } from './CategoryList'
-import { AttributeItem, AttributeExpandBtn } from '../AttributeFilter'
+import {
+  AttributeItem,
+  AttributeExpandBtn,
+  AttributeSpacing,
+} from '../AttributeFilter'
 
 interface CategoryItemProps {
   name: string
@@ -63,8 +67,10 @@ export function CategoryItem({
           inputRef={inputRef}
           showFacetCount={showFacetCount}
         />
-        {childrenLength > 0 && (
+        {childrenLength > 0 ? (
           <AttributeExpandBtn expanded={expanded} handleExpand={handleExpand} />
+        ) : (
+          <AttributeSpacing />
         )}
       </div>
       {childrenLength > 0 && (

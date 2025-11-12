@@ -2,20 +2,15 @@ import React, { useMemo } from 'react'
 
 import { PageBtn } from './PageBtn'
 import styles from './Pagination.css'
+import { useListingContext } from '../../../context'
 
 interface PaginationProps {
-  page: number
   totalPages: number
-  onPageChange: (page: number) => void
   maxVisible?: number
 }
 
-export function Pagination({
-  page,
-  totalPages,
-  onPageChange,
-  maxVisible = 5,
-}: PaginationProps) {
+export function Pagination({ totalPages, maxVisible = 5 }: PaginationProps) {
+  const { page, setPageHandler } = useListingContext()
   const middlePages = useMemo(() => {
     const half = Math.floor(maxVisible / 2)
     let start = page - half
@@ -40,19 +35,19 @@ export function Pagination({
 
   return (
     <div className={styles['pagination-container']}>
-      {middlePages[0] > 1 && <PageBtn onPageChange={onPageChange} page={1} />}
+      {middlePages[0] > 1 && <PageBtn onPageChange={setPageHandler} page={1} />}
       {middlePages[0] > 2 && <span>...</span>}
       {middlePages.map((p) => (
         <PageBtn
           key={`${p}${Math.random()}`}
-          onPageChange={onPageChange}
+          onPageChange={setPageHandler}
           page={p}
           isActive={p === page}
         />
       ))}
       {middlePages[middlePages.length - 1] < totalPages - 1 && <span>...</span>}
       {middlePages[middlePages.length - 1] < totalPages && (
-        <PageBtn onPageChange={onPageChange} page={totalPages} />
+        <PageBtn onPageChange={setPageHandler} page={totalPages} />
       )}
     </div>
   )

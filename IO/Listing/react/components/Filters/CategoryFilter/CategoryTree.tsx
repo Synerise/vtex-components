@@ -1,14 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { useRuntime } from 'vtex.render-runtime'
 
 import { mapCategoriesToTree } from './utils'
 import { CategoryList } from './CategoryList'
-import type { FilterType } from '../utils'
+import { useSafeRuntime } from '../../../hooks'
+import { useListingContext } from '../../../context'
 
 interface CategoryTreeProps {
   facets: Record<string, number>
   filterKey: string
-  setFilters: React.Dispatch<React.SetStateAction<FilterType>>
   defaultFilter?: string
   showFacetCount?: boolean
 }
@@ -16,18 +15,15 @@ interface CategoryTreeProps {
 export function CategoryTree({
   facets,
   filterKey,
-  setFilters,
   defaultFilter = '',
   showFacetCount = false,
 }: CategoryTreeProps) {
-  const { setQuery, query } = useRuntime()
-  const categoriesQuery: undefined | string = query?.[filterKey]
+  const { setFilters } = useListingContext()
+  const { setSafeQuery, safeQuery } = useSafeRuntime()
+  const categoriesQuery: undefined | string = safeQuery?.[filterKey]
+
   const queryFilters = useMemo(
-    () =>
-      categoriesQuery
-        ?.replace(/---/g, ' & ')
-        .split(',')
-        .filter((cat) => cat.length) ?? [],
+    () => categoriesQuery?.split(',').filter((cat) => cat.length) ?? [],
     [categoriesQuery]
   )
 
@@ -53,13 +49,11 @@ export function CategoryTree({
     })
   }, [defaultFilter, filterKey, setFilters, queryFilters])
 
-  const updateFilters = (selectedCategories: string[]) => {
-    setQuery({
-      [filterKey]: selectedCategories.length
-        ? selectedCategories.join(',').replace(/ & /g, '---')
-        : undefined,
+  const updateFilters = (selected: string[]) => {
+    setSafeQuery({
+      [filterKey]: selected.length ? selected.join(',') : undefined,
     })
-    setCategoriesState(selectedCategories)
+    setCategoriesState(selected)
   }
 
   return (
