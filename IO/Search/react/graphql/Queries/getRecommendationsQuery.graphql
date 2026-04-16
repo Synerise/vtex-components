@@ -27,6 +27,7 @@ query getRecommendationsQuery(
       data
       extras {
         correlationId
+        campaignId
       }
     }
   }

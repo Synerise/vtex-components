@@ -43,38 +43,42 @@ export function RecoSlider({
 }: RecoSliderProps) {
   const productCtx = useProduct()
   const [device, setDevice] = useState<DevicesType>(DEVICES.phone)
-  const { data, loading } = useQuery(getRecommendationsQuery, {
-    variables: {
-      campaignId,
-      items: productCtx?.product?.productId
-        ? [productCtx.product.productId]
-        : [],
-      ...(itemsSource.id && {itemsSource}),
-      itemsExcluded: itemsExcluded?.split(','),
-      additionalFilters,
-      filtersJoiner,
-      additionalElasticFilters,
-      elasticFiltersJoiner,
-      displayAttributes: displayAttributes?.split(','),
-      includeContextItems,
-    },
-    onCompleted: (data) => {
-      if (typeof SR === 'undefined') return
-      const {
-        data: recoData,
-        extras: { correlationId },
-      } = data.syneriseAIRecommendations.recommendations
-
-      SR.event.recommendationView({
+  const { data: recommendationData, loading } = useQuery(
+    getRecommendationsQuery,
+    {
+      variables: {
         campaignId,
-        correlationId,
-        items: recoData.map(({ itemId }: { itemId: string }) => itemId),
-      })
-    },
-    ssr: false,
-  })
+        items: productCtx?.product?.productId
+          ? [productCtx.product.productId]
+          : [],
+        ...(itemsSource.id && { itemsSource }),
+        itemsExcluded: itemsExcluded?.split(','),
+        additionalFilters,
+        filtersJoiner,
+        additionalElasticFilters,
+        elasticFiltersJoiner,
+        displayAttributes: displayAttributes?.split(','),
+        includeContextItems,
+      },
+      onCompleted: (data) => {
+        if (typeof SR === 'undefined') return
+        const {
+          data: recoData,
+          extras: { correlationId, campaignId: variantCampaignId },
+        } = data.syneriseAIRecommendations.recommendations
 
-  const recoData = data?.syneriseAIRecommendations.recommendations.data
+        SR.event.recommendationView({
+          campaignId: variantCampaignId,
+          correlationId,
+          items: recoData.map(({ itemId }: { itemId: string }) => itemId),
+        })
+      },
+      ssr: false,
+    }
+  )
+
+  const recoData =
+    recommendationData?.syneriseAIRecommendations.recommendations.data ?? []
 
   useEffect(() => {
     setDevice(getDevice())
@@ -90,7 +94,7 @@ export function RecoSlider({
             </div>
           </div>
         )}
-      {recoData?.length > 0 &&
+      {recoData.length > 0 &&
         recoData.map((productData: ProductData) => (
           <RecoItem key={productData.itemId} productData={productData} />
         ))}
