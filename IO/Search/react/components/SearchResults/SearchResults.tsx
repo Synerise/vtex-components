@@ -55,11 +55,11 @@ export function SearchResults({
       if (typeof SR === 'undefined') return
       const {
         data: recoData,
-        extras: { correlationId },
+        extras: { correlationId, campaignId },
       } = data.syneriseAIRecommendations.recommendations
 
       SR.event.recommendationView({
-        campaignId: recoId,
+        campaignId,
         correlationId,
         items: recoData.map(({ itemId }: { itemId: string }) => itemId),
       })
