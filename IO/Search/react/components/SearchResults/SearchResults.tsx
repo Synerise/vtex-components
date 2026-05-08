@@ -42,7 +42,7 @@ export function SearchResults({
 
   const showRecommendation = showRecoNoQuery || showRecoNoResults
 
-  const showResults = !!query.length && !!products.length
+  const isSearchActive = !!query.length && !!products.length
   const showSearchHints = showRecent || showPopular
 
   const recoId = showRecoNoResults ? recoNoResults : recoNoQuery
@@ -75,12 +75,16 @@ export function SearchResults({
     ? recoHeadingNoResults
     : recoHeadingNoQuery
 
-  const results = showResults ? products : recommendationProducts
-  const heading = showResults ? 'Search results' : recommendationHeading
+  const results = isSearchActive ? products : recommendationProducts
+  const heading = isSearchActive ? 'Search results' : recommendationHeading
 
   return (
     <div className={styles['search-results-container']}>
-      <SearchResultsList products={results} heading={heading} />
+      <SearchResultsList
+        products={results}
+        heading={heading}
+        isSearchActive={isSearchActive}
+      />
       {showSearchHints && (
         <SearchHints showPopular={showPopular} showRecent={showRecent} />
       )}

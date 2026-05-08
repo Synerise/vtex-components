@@ -9,9 +9,14 @@ import { SearchContext } from '../Search'
 interface SearchProductProps {
   product: ProductDataType
   position: number
+  isSearchActive: boolean
 }
 
-export function SearchProduct({ product, position }: SearchProductProps) {
+export function SearchProduct({
+  product,
+  position,
+  isSearchActive,
+}: SearchProductProps) {
   const { correlationId } = useContext(SearchContext)
   const { culture } = useRuntime()
   const price = product.price?.value ?? product.price
@@ -19,7 +24,7 @@ export function SearchProduct({ product, position }: SearchProductProps) {
   const isSale = price !== salePrice
 
   const clickHandler = () => {
-    if (typeof SR === 'undefined' || !correlationId) return
+    if (typeof SR === 'undefined' || !isSearchActive || !correlationId) return
 
     SR.event.itemSearchClick({
       correlationId,

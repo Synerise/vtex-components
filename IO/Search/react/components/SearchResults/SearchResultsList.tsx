@@ -7,11 +7,13 @@ import styles from './SearchResults.css'
 interface SearchResultsListProps {
   products: ProductDataType[]
   heading?: string
+  isSearchActive: boolean
 }
 
 export function SearchResultsList({
   products,
   heading = 'Search results',
+  isSearchActive,
 }: SearchResultsListProps) {
   if (!products.length) {
     return null
@@ -26,6 +28,7 @@ export function SearchResultsList({
             key={product.itemId}
             position={i + 1}
             product={product}
+            isSearchActive={isSearchActive}
           />
         ))}
       </ul>
